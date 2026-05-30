@@ -1,0 +1,15 @@
+//Nombre: Denny Figueroa
+Algoritmo añosbis
+    Definir asval Como Entero;
+    
+	asval<-0;
+    Escribir "Ingrese un año para determinar si es bisiesto:";
+    Leer asval;
+    
+    Si (asval MOD 4 = 0 Y asval MOD 100 <> 0) O ( asval MOD 400 = 0) Entonces;
+        Escribir "El año ",asval, " es bisiesto.";
+    Sino
+        Escribir "El año ",asval, " no es bisiesto.";
+    FinSi;
+    
+FinAlgoritmo

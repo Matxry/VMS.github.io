@@ -1,0 +1,18 @@
+//Nombre:Denny Figueroa
+Algoritmo triangulo
+	Definir meduno, meddos , medtres Como Real
+	meduno<-0
+	meddos<-0
+	medtres<-0
+	Mostrar "ingrese el primer valor"
+	Leer meduno 
+	Mostrar "ingrese el segundo valor"
+	Leer meddos
+	Mostrar "ingrese el tercer valor"
+	Leer medtres
+	Si ((meduno+meddos>medtres) Y (meddos+medtres>meduno) Y (meduno+medtres>meddos)) Entonces
+		Mostrar "Es posible formar un triangulo con las medidas dadas"
+	SiNo
+		Mostrar "No se puede formar un triangulo con las medidas dadas"
+	Fin Si
+FinAlgoritmo

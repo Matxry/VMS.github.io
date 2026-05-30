@@ -1,0 +1,76 @@
+//Nombre: Denny Figueroa
+Algoritmo SistemaControlGym
+	Definir valMen,sumMes Como Real;
+	Definir numMes,valEdad,opEsco,contMes Como Entero;
+	valMen<-0.0
+	numMes<-0
+	valEdad<-0
+	opEsco<-0
+	contMes<-0
+	sumMes<-0
+	Mostrar "Bienvenido, a nuestro sistema" 
+	
+	//El repetir solo terminara hasta que la opcion escogida sea la numero 4
+	Repetir
+		//Mostrar las opciones posibles
+		Mostrar "Escoja una de las opciones:"
+		Mostrar "1.- Registrar pago de mensualidad"
+		Mostrar "2.- Consultar costo total por varios meses"
+		Mostrar "3.- Validar acceso por edad"
+		Mostrar "4.- Salir"
+		Leer opEsco
+		Segun opEsco Hacer
+			1:
+				
+				//La opcion verificara que el valor ingresado sea postivo caso contrario
+				// se volvera iniciar hasta que el valor sea mayor a 0
+				Repetir
+					Mostrar "Ingrese el costo de la mensualidad"
+					Leer valMen
+					Mostrar "Verificando que el valor ingresado sea valido"
+					Si valMen<=0 Entonces
+						Mostrar "Error: el valor ingresado no es valido"
+					Fin Si
+				Hasta Que valMen>0
+				Mostrar "Registro realizado con exito"
+			2:
+				Mostrar "Ingrese el numero de meses"
+				Leer numMes
+				Mostrar "Ingrese el costo de la mensualidad"
+				Leer valMen
+				//Validar que los valores ingresados sean positivos
+				Mientras valMen<=0 Hacer
+					Mostrar "Valor ingresado no es valido ingrese nuevamente"
+					Leer valMen
+				Fin Mientras
+				Mientras numMes<=0 Hacer
+					Mostrar "El numero de meses no es valido"
+					Mostrar "Digite nuevamente"
+					Leer numMes
+				Fin Mientras
+				//Crear un contador para que los meses se sigan sumando hasta llegar a los meses ingresados
+				Mientras numMes>contMes Hacer
+					sumMes<-sumMes+valMen
+					contMes<-contMes+1
+					Mostrar "Su saldo pendiente hasta el momento es: ",sumMes
+				Fin Mientras
+				//Reiniciar los contadores para una posible nueva operacion
+				sumMes<-0
+				contMes<-0
+			3:
+				Mostrar "Ingrese su edad"
+				Leer valEdad
+				Si valEdad>=16 Entonces
+					Mostrar "Puede ingresar"
+				SiNo
+					Mostrar "No puede ingresar si un acompañante"
+				Fin Si
+			4:	
+				Mostrar "Gracias por usar el sistema"
+				
+			De Otro Modo:
+				Mostrar "La opcion ingresada no existe"
+				Mostrar "Digite nuevamente"
+		Fin Segun
+	Hasta Que (opEsco==4)	
+FinAlgoritmo

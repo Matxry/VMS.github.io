@@ -1,0 +1,56 @@
+//Nombre: Denny Figueroa
+
+Algoritmo Productostienda
+
+	Definir nomProd Como Cadena;
+	Definir precProd,precTot,subtot Como Real;
+	Definir cantProd,venDesc, cantProdTot Como Entero;
+	Definir elecClie Como Logico;
+	elecClie<-Falso
+	precProd<-0.00
+	cantProd<-0
+	precTot<-0
+	venDesc<-0
+	//Solicitar los datos del producto deseado
+	Repetir
+		Mostrar "Ingrese el nombre del producto";
+		Leer nomProd
+		Mostrar "Ingrese el precio del producto";
+		Leer precProd;
+		//Comprobar que el precio del producto ingresado se mayor a 0
+		Mientras (precProd<=0)
+			Mostrar "el valor ingresado es negativo";
+			Mostrar "ingrese el valor nuevamente";
+			Leer precProd;
+		FinMientras;
+		Mostrar "ingrese la cantidad de unidades";
+		Leer cantProd;
+		//Comprobar que la cantidad de productos se mayor a 0
+		Mientras (cantProd<=0)
+			Mostrar "el valor ingresado es negativo";
+			Mostrar "ingrese la cantidad nuevamente";
+			Leer cantProd;
+		FinMientras
+		//sumatoria para determinar la cantidad de producto
+		cantProdTot<-cantProdTot+cantProd;
+		//Calcular el subtotal
+		subtot<-precProd*cantProd;
+		Mostrar "La suma actual es de : ",subtot;
+		Si subtot>=50 Entonces
+			subtot<-(subtot-(subtot*0.1))
+			venDesc<-venDesc+1
+		Fin Si;
+		precTot<-precTot+subtot;
+		//Preguntar al cliente si quiere agregar mas productos
+		Mostrar " ¿desea ingresar otro producto?";
+		Leer elecClie;
+	Hasta Que No(elecClie);
+	
+	//Impresion de resultados
+	Imprimir "Esta venta"
+	Imprimir "El total de esta venta es: ", precTot;
+	Imprimir "La cantidad de productos vendidos es: ",cantProdTot;
+	Imprimir "El numero de ventas con descuentos fue: ", venDesc;
+	
+	
+FinAlgoritmo

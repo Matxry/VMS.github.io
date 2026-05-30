@@ -1,0 +1,18 @@
+//Nombre:Denny Figueroa
+
+Algoritmo numpares
+	Definir valdad,valin Como Entero
+	valdad<-0
+	valin<-0
+	Mostrar "ingrese su numero"
+	Leer valdad
+	Si valdad<0 Entonces
+		Imprimir "El numero es negativo"
+	SiNo
+		Mientras valdad>valin Hacer
+			
+			Mostrar valin
+			valin<-valin + 2
+		Fin Mientras
+	Fin Si
+FinAlgoritmo

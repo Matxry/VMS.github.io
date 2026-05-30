@@ -1,0 +1,25 @@
+//Nombre Denny Figueroa
+Algoritmo edades
+
+	edad<-0;
+	
+	Mostrar "Ingrese su edad"
+	Leer edad
+	Si edad < 0 Entonces
+		Mostrar "el valor ingresado es negativo"
+	SiNo
+		Si edad <10 Entonces
+			Mostrar  "usted es un niño"
+		SiNo
+			Si edad<18 Entonces
+				Mostrar "Usted es un adolescente"
+			SiNo
+				Si edad < 46 Entonces
+					Mostrar "Usted es un adulto"
+				SiNo
+					Mostrar "Usted es un adulto mayor"
+				FinSi
+			FinSi
+		FinSi
+	Fin Si
+FinAlgoritmo

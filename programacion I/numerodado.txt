@@ -1,0 +1,17 @@
+//Nombre: Denny Figueroa
+Algoritmo numerodado
+	Definir numdad,numinc Como Entero
+	
+	numdad<-0
+	numinc<-(-1)
+	Mostrar "Ingrese un numero"
+	Leer numdad
+	Si numdad<0 Entonces
+		Mostrar "El numero ingresado es negativo"
+	SiNo
+		Mientras numdad>numinc Hacer
+			numinc<-numinc + 1
+			Mostrar numinc 
+		Fin Mientras
+	Fin Si
+FinAlgoritmo
