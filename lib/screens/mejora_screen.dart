@@ -42,11 +42,9 @@ class _MejoraScreenState extends State<MejoraScreen> {
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) Navigator.pop(context);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
       );
-      }
     }
   }
 
@@ -106,9 +104,9 @@ class _MejoraScreenState extends State<MejoraScreen> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: kNavy.withOpacity(0.2)),
             ),
-            child: const Row(children: [
-              Icon(Icons.info_outline, color: kNavy, size: 20),
-              SizedBox(width: 10),
+            child: Row(children: [
+              const Icon(Icons.info_outline, color: kNavy, size: 20),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Los problemas se sincronizan automaticamente desde el diagnostico. '

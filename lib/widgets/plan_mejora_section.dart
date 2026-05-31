@@ -71,9 +71,9 @@ class _FilaMejoraCard extends StatelessWidget {
         // Cabecera con area + impacto
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: _kDark,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
           ),
           child: Row(children: [
             // Numero
@@ -147,7 +147,7 @@ class _FilaMejoraCard extends StatelessWidget {
                   border: Border.all(color: color.withOpacity(0.2)),
                 ),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text('Problema detectado',
+                  Text('Problema detectado',
                       style: TextStyle(fontSize: 10, color: _kGrey, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 3),
                   Text(fila.problema,
@@ -189,18 +189,16 @@ class _FilaMejoraCard extends StatelessWidget {
                       ['Baja', 'Media', 'Alta'],
                       (v) => onUpdate(() => fila.dificultad = v ?? ''))),
                   const SizedBox(width: 8),
-                  Expanded(child: _dropdown('Impacto esperado', fila.impactoEsperado,
-                      ['Bajo', 'Medio', 'Alto'],
-                      (v) => onUpdate(() => fila.impactoEsperado = v ?? ''))),
+                  Expanded(child: _field('Impacto esperado', fila.impactoEsperado,
+                      (v) => onUpdate(() => fila.impactoEsperado = v))),
                 ]);
               }
               return Column(children: [
                 _dropdown('Dificultad', fila.dificultad, ['Baja', 'Media', 'Alta'],
                     (v) => onUpdate(() => fila.dificultad = v ?? '')),
                 const SizedBox(height: 8),
-                _dropdown('Impacto esperado', fila.impactoEsperado,
-                    ['Bajo', 'Medio', 'Alto'],
-                    (v) => onUpdate(() => fila.impactoEsperado = v ?? '')),
+                _field('Impacto esperado', fila.impactoEsperado,
+                    (v) => onUpdate(() => fila.impactoEsperado = v)),
               ]);
             }),
           ]),
@@ -232,7 +230,7 @@ class _FilaMejoraCard extends StatelessWidget {
 
   Widget _dropdown(String label, String value, List<String> opts, void Function(String?) onChange) {
     return DropdownButtonFormField<String>(
-      initialValue: opts.contains(value) ? value : null,
+      value: opts.contains(value) ? value : null,
       hint: Text(label, style: const TextStyle(fontSize: 12, color: _kGrey)),
       items: opts.map((o) => DropdownMenuItem(value: o,
           child: Text(o, style: const TextStyle(fontSize: 13)))).toList(),

@@ -52,7 +52,7 @@ Future<void> generarPDFProyeccion(AppState state) async {
 
         // Tabla
         pw.Table(
-          border: pw.TableBorder.all(color: const PdfColor.fromInt(0x44000000), width: 0.5),
+          border: pw.TableBorder.all(color: PdfColor.fromInt(0x44000000), width: 0.5),
           columnWidths: const {
             0: pw.FlexColumnWidth(2),
             1: pw.FlexColumnWidth(1.5),
@@ -70,9 +70,9 @@ Future<void> generarPDFProyeccion(AppState state) async {
             ),
             ...state.proyeccion.asMap().entries.map((e) {
               final f  = e.value;
-              const bg = PdfColor.fromInt(0x00000000);
+              final bg = const PdfColor.fromInt(0x00000000);
               return pw.TableRow(
-                decoration: const pw.BoxDecoration(color: PdfColor.fromInt(0x00000000)),
+                decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF)),
                 children: [
                   // Indicador
                   pw.Padding(
@@ -88,12 +88,12 @@ Future<void> generarPDFProyeccion(AppState state) async {
                         : pw.Container(
                             padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                             decoration: pw.BoxDecoration(
-                              color: const PdfColor.fromInt(0xFFFDEDEC),
+                              color: PdfColor.fromInt(0x33FFCDD2),
                               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
                               border: pw.Border.all(color: pUrgent, width: 0.5),
                             ),
                             child: pw.Text(f.estadoActual,
-                                style: const pw.TextStyle(fontSize: 8, color: pUrgent)),
+                                style: pw.TextStyle(fontSize: 8, color: pUrgent)),
                           ),
                   ),
                   // Proyección — azul claro
@@ -104,12 +104,12 @@ Future<void> generarPDFProyeccion(AppState state) async {
                         : pw.Container(
                             padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                             decoration: pw.BoxDecoration(
-                              color: const PdfColor.fromInt(0xFFEAF2F8),
+                              color: PdfColor.fromInt(0x33BBDEFB),
                               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
                               border: pw.Border.all(color: pBlue, width: 0.5),
                             ),
                             child: pw.Text(f.proyeccion,
-                                style: const pw.TextStyle(fontSize: 8, color: pBlue)),
+                                style: pw.TextStyle(fontSize: 8, color: pBlue)),
                           ),
                   ),
                   // Mejora esperada — verde claro
@@ -120,12 +120,12 @@ Future<void> generarPDFProyeccion(AppState state) async {
                         : pw.Container(
                             padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                             decoration: pw.BoxDecoration(
-                              color: const PdfColor.fromInt(0xFFEAF6EA),
+                              color: PdfColor.fromInt(0x33C8E6C9),
                               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
                               border: pw.Border.all(color: pLow, width: 0.5),
                             ),
                             child: pw.Text(f.mejoraEsperada,
-                                style: const pw.TextStyle(fontSize: 8, color: pLow)),
+                                style: pw.TextStyle(fontSize: 8, color: pLow)),
                           ),
                   ),
                 ],
@@ -151,16 +151,16 @@ pw.Widget _resumenIndicadores(AppState state) {
   return pw.Container(
     padding: const pw.EdgeInsets.all(12),
     decoration: pw.BoxDecoration(
-      color: const PdfColor.fromInt(0xFFEAF2F8),
+      color: PdfColor.fromInt(0x33BBDEFB),
       borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
-      border: pw.Border.all(color: const PdfColor.fromInt(0xFF2C3E50), width: 0.5),
+      border: pw.Border.all(color: PdfColor.fromInt(0xFF2C3E50), width: 0.5),
     ),
     child: pw.Row(children: [
       pw.Container(
         width: 40, height: 40,
-        decoration: const pw.BoxDecoration(
-          color: PdfColor.fromInt(0xFF2C3E50),
-          borderRadius: pw.BorderRadius.all(pw.Radius.circular(20)),
+        decoration: pw.BoxDecoration(
+          color: const PdfColor.fromInt(0xFF2C3E50),
+          borderRadius: const pw.BorderRadius.all(pw.Radius.circular(20)),
         ),
         child: pw.Center(
           child: pw.Text('$completos',
@@ -173,7 +173,7 @@ pw.Widget _resumenIndicadores(AppState state) {
             style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold,
                 color: const PdfColor.fromInt(0xFF2C3E50))),
         pw.Text('$completos de $total indicadores completados',
-            style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600)),
+            style: pw.TextStyle(fontSize: 9, color: PdfColors.grey600)),
       ]),
     ]),
   );

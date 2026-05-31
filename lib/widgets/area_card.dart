@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/models.dart';
@@ -148,7 +149,7 @@ class _SubtemaRowState extends State<_SubtemaRow> {
                 Text(sub.nombre,
                     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: kPrimary)),
                 Text(sub.subarea,
-                    style: const TextStyle(fontSize: 11, color: kGrey)),
+                    style: TextStyle(fontSize: 11, color: kGrey)),
               ]),
             ),
             // Calificación 1-5

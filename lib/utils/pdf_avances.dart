@@ -82,7 +82,7 @@ Future<void> generarPDFAvances(AppState state) async {
 
         // Tabla con observaciones
         pw.Table(
-          border: pw.TableBorder.all(color: const PdfColor.fromInt(0x44000000), width: 0.5),
+          border: pw.TableBorder.all(color: PdfColor.fromInt(0x44000000), width: 0.5),
           columnWidths: const {
             0: pw.FlexColumnWidth(0.9),
             1: pw.FlexColumnWidth(2.2),
@@ -100,15 +100,14 @@ Future<void> generarPDFAvances(AppState state) async {
             ),
             ...state.planImplementacion.asMap().entries.map((e) {
               final f  = e.value;
-              const bg = PdfColor.fromInt(0x00000000);
+              final bg = const PdfColor.fromInt(0x00000000);
               PdfColor estColor;
-              if (f.estado == 'Concluido') {
-                estColor = pGreen;
-              } else if (f.estado == 'En progreso') estColor = pMed;
+              if (f.estado == 'Concluido')       estColor = pGreen;
+              else if (f.estado == 'En progreso') estColor = pMed;
               else                                estColor = PdfColors.grey500;
 
               return pw.TableRow(
-                decoration: const pw.BoxDecoration(color: PdfColor.fromInt(0x00000000)),
+                decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF)),
                 children: [
                   // Período
                   pw.Padding(
@@ -140,16 +139,16 @@ Future<void> generarPDFAvances(AppState state) async {
                   pw.Padding(
                     padding: const pw.EdgeInsets.all(5),
                     child: f.observaciones.isEmpty
-                        ? pw.Text('—', style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey500))
+                        ? pw.Text('—', style: pw.TextStyle(fontSize: 9, color: PdfColors.grey500))
                         : pw.Container(
                             padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                             decoration: pw.BoxDecoration(
-                              color: const PdfColor.fromInt(0xFFECF0F1),
+                              color: PdfColor.fromInt(0x33ECEFF1),
                               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
                               border: pw.Border.all(color: PdfColors.grey400, width: 0.5),
                             ),
                             child: pw.Text(f.observaciones,
-                                style: const pw.TextStyle(fontSize: 8, color: PdfColor.fromInt(0xFF2C3E50))),
+                                style: pw.TextStyle(fontSize: 8, color: PdfColor.fromInt(0xFF2C3E50))),
                           ),
                   ),
                 ],
@@ -213,7 +212,7 @@ pw.Widget _statBox(String label, String value, PdfColor color) => pw.Expanded(
     ),
     child: pw.Column(children: [
       pw.Text(value, style: pw.TextStyle(color: PdfColors.white, fontSize: 16, fontWeight: pw.FontWeight.bold)),
-      pw.Text(label, style: const pw.TextStyle(color: PdfColors.white, fontSize: 7)),
+      pw.Text(label, style: pw.TextStyle(color: PdfColors.white, fontSize: 7)),
     ]),
   ),
 );

@@ -58,7 +58,7 @@ Future<void> generarPDFMejora(AppState state) async {
 
           // Tabla
           pw.Table(
-            border: pw.TableBorder.all(color: const PdfColor.fromInt(0x44000000), width: 0.5),
+            border: pw.TableBorder.all(color: PdfColor.fromInt(0x44000000), width: 0.5),
             columnWidths: const {
               0: pw.FlexColumnWidth(0.7),
               1: pw.FlexColumnWidth(1.1),
@@ -80,15 +80,14 @@ Future<void> generarPDFMejora(AppState state) async {
               ),
               ...state.planMejora.asMap().entries.map((e) {
                 final f  = e.value;
-                const bg = PdfColor.fromInt(0x00000000);
+                final bg = const PdfColor.fromInt(0x00000000);
                 PdfColor impColor;
-                if (f.nivelImpacto <= 2) {
-                  impColor = pUrgent;
-                } else if (f.nivelImpacto <= 4) impColor = pMed;
+                if (f.nivelImpacto <= 2)      impColor = pUrgent;
+                else if (f.nivelImpacto <= 4) impColor = pMed;
                 else                          impColor = pLow;
 
                 return pw.TableRow(
-                  decoration: const pw.BoxDecoration(color: PdfColor.fromInt(0x00000000)),
+                  decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF)),
                   children: [
                     // Impacto
                     pw.Padding(
@@ -158,7 +157,7 @@ pw.Widget _resumenBadge(String label, int count, PdfColor color) {
     child: pw.Column(children: [
       pw.Text('$count', style: pw.TextStyle(color: PdfColors.white,
           fontSize: 18, fontWeight: pw.FontWeight.bold)),
-      pw.Text(label, style: const pw.TextStyle(color: PdfColors.white, fontSize: 8)),
+      pw.Text(label, style: pw.TextStyle(color: PdfColors.white, fontSize: 8)),
     ]),
   );
 }

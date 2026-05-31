@@ -15,10 +15,10 @@ class HeaderSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(children: [
-              Icon(Icons.info_outline, color: Color(0xFF1A3A5C)),
-              SizedBox(width: 8),
-              Text('Información del Informe',
+            Row(children: [
+              const Icon(Icons.info_outline, color: Color(0xFF1A3A5C)),
+              const SizedBox(width: 8),
+              const Text('Información del Informe',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1A3A5C))),
             ]),
             const SizedBox(height: 12),
