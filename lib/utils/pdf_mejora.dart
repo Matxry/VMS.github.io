@@ -80,14 +80,14 @@ Future<void> generarPDFMejora(AppState state) async {
               ),
               ...state.planMejora.asMap().entries.map((e) {
                 final f  = e.value;
-                final bg = const PdfColor.fromInt(0x00000000);
+                final bg = const PdfColor.fromInt(0x00FFFFFF);
                 PdfColor impColor;
                 if (f.nivelImpacto <= 2)      impColor = pUrgent;
                 else if (f.nivelImpacto <= 4) impColor = pMed;
                 else                          impColor = pLow;
 
                 return pw.TableRow(
-                  decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF)),
+                  decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF))),
                   children: [
                     // Impacto
                     pw.Padding(

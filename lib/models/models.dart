@@ -298,3 +298,128 @@ class AppState {
     }
   }
 }
+
+// ══════════════════════════════════════════════════════
+// SERIALIZACIÓN JSON
+// ══════════════════════════════════════════════════════
+
+extension SubtemaModelJson on SubtemaModel {
+  Map<String, dynamic> toJson() => {
+    'nombre': nombre,
+    'subarea': subarea,
+    'calificacion': calificacion,
+    'observacion': observacion,
+    'problemaDetectado': problemaDetectado,
+  };
+}
+
+extension AreaModelJson on AreaModel {
+  Map<String, dynamic> toJson() => {
+    'nombre': nombre,
+    'subtemas': subtemas.map((s) => s.toJson()).toList(),
+  };
+}
+
+extension FilaMejoraJson on FilaMejora {
+  Map<String, dynamic> toJson() => {
+    'area': area,
+    'problema': problema,
+    'accionRecomendada': accionRecomendada,
+    'responsable': responsable,
+    'tiempoEstimado': tiempoEstimado,
+    'dificultad': dificultad,
+    'impactoEsperado': impactoEsperado,
+    'nivelImpacto': nivelImpacto,
+    'autoGenerado': autoGenerado,
+    'incluido': incluido,
+  };
+
+  static FilaMejora fromJson(Map<String, dynamic> j) => FilaMejora(
+    area: j['area'] ?? '',
+    problema: j['problema'] ?? '',
+    accionRecomendada: j['accionRecomendada'] ?? '',
+    responsable: j['responsable'] ?? '',
+    tiempoEstimado: j['tiempoEstimado'] ?? '',
+    dificultad: j['dificultad'] ?? '',
+    impactoEsperado: j['impactoEsperado'] ?? '',
+    nivelImpacto: j['nivelImpacto'] ?? 3,
+    autoGenerado: j['autoGenerado'] ?? false,
+    incluido: j['incluido'] ?? true,
+  );
+}
+
+extension FilaImplementacionJson on FilaImplementacion {
+  Map<String, dynamic> toJson() => {
+    'periodo': periodo,
+    'accion': accion,
+    'estado': estado,
+    'observaciones': observaciones,
+  };
+
+  static FilaImplementacion fromJson(Map<String, dynamic> j) =>
+      FilaImplementacion(
+        periodo: j['periodo'] ?? '',
+        accion: j['accion'] ?? '',
+        estado: j['estado'] ?? 'Pendiente',
+        observaciones: j['observaciones'] ?? '',
+      );
+}
+
+extension FilaProyeccionJson on FilaProyeccion {
+  Map<String, dynamic> toJson() => {
+    'indicador': indicador,
+    'estadoActual': estadoActual,
+    'proyeccion': proyeccion,
+    'mejoraEsperada': mejoraEsperada,
+  };
+
+  static FilaProyeccion fromJson(Map<String, dynamic> j) => FilaProyeccion(
+    indicador: j['indicador'] ?? '',
+    estadoActual: j['estadoActual'] ?? '',
+    proyeccion: j['proyeccion'] ?? '',
+    mejoraEsperada: j['mejoraEsperada'] ?? '',
+  );
+}
+
+extension AppStateJson on AppState {
+  Map<String, dynamic> toJson() => {
+    'nombreClub': nombreClub,
+    'fecha': fecha,
+    'consultor': consultor,
+    'areas': areas.map((a) => a.toJson()).toList(),
+    'planMejora': planMejora.map((f) => f.toJson()).toList(),
+    'planImplementacion': planImplementacion.map((f) => f.toJson()).toList(),
+    'proyeccion': proyeccion.map((f) => f.toJson()).toList(),
+  };
+
+  static AppState fromJson(Map<String, dynamic> j, List<AreaModel> baseAreas) {
+    // Restaurar calificaciones y observaciones sobre la estructura base
+    final areasJson = j['areas'] as List? ?? [];
+    for (int i = 0; i < areasJson.length && i < baseAreas.length; i++) {
+      final areaJ    = areasJson[i] as Map<String, dynamic>;
+      final subtemasJ = areaJ['subtemas'] as List? ?? [];
+      for (int k = 0; k < subtemasJ.length && k < baseAreas[i].subtemas.length; k++) {
+        final sj = subtemasJ[k] as Map<String, dynamic>;
+        baseAreas[i].subtemas[k].calificacion      = sj['calificacion'] ?? 0;
+        baseAreas[i].subtemas[k].observacion       = sj['observacion'] ?? '';
+        baseAreas[i].subtemas[k].problemaDetectado = sj['problemaDetectado'] ?? '';
+      }
+    }
+
+    return AppState(
+      nombreClub: j['nombreClub'] ?? '',
+      fecha: j['fecha'] ?? '',
+      consultor: j['consultor'] ?? '',
+      areas: baseAreas,
+      planMejora: (j['planMejora'] as List? ?? [])
+          .map((e) => FilaMejoraJson.fromJson(e))
+          .toList(),
+      planImplementacion: (j['planImplementacion'] as List? ?? [])
+          .map((e) => FilaImplementacionJson.fromJson(e))
+          .toList(),
+      proyeccion: (j['proyeccion'] as List? ?? [])
+          .map((e) => FilaProyeccionJson.fromJson(e))
+          .toList(),
+    );
+  }
+}

@@ -151,7 +151,7 @@ Future<void> generarPDFDiagnostico(AppState state) async {
           pw.Container(
             padding: const pw.EdgeInsets.all(10),
             decoration: pw.BoxDecoration(
-              color: PdfColor.fromInt(0x22ECEFF1),
+              color: PdfColor.fromInt(0x220D1B2A),
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
             ),
             child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -225,10 +225,10 @@ pw.Widget _areaBlock(AreaModel area) {
         ),
         ...area.subtemas.asMap().entries.map((e) {
           final sub  = e.value;
-          final bg   = const PdfColor.fromInt(0x00FFFFFF);
+          final bg = const PdfColor.fromInt(0x00FFFFFF);
           final calC = _calColor(sub.calificacion.toDouble());
           return pw.TableRow(
-            decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF)),
+            decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF))),
             children: [
               pw.Padding(
                 padding: const pw.EdgeInsets.all(4),
@@ -245,7 +245,7 @@ pw.Widget _areaBlock(AreaModel area) {
                       width: double.infinity,
                       padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                       decoration: pw.BoxDecoration(
-                        color: PdfColor.fromInt(0x33ECEFF1),
+                        color: PdfColor.fromInt(0x220D1B2A),
                         borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3)),
                         border: pw.Border.all(color: PdfColor.fromInt(0xFFBDC3C7), width: 0.5),
                       ),
@@ -260,7 +260,7 @@ pw.Widget _areaBlock(AreaModel area) {
                       width: double.infinity,
                       padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                       decoration: pw.BoxDecoration(
-                        color: PdfColor.fromInt(0x33FFCDD2),
+                        color: PdfColor.fromInt(0x22C0392B),
                         borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3)),
                         border: pw.Border.all(color: pUrgent, width: 0.5),
                       ),
@@ -320,8 +320,7 @@ pw.Widget _areaBlock(AreaModel area) {
 
 pw.Widget _leyendaBadge(String label, PdfColor color) => pw.Row(children: [
   pw.Container(width: 12, height: 12,
-      decoration: pw.BoxDecoration(color: color,
-          borderRadius: const pw.BorderRadius.all(pw.Radius.circular(3)))),
+      decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF))))),
   pw.SizedBox(width: 4),
   pw.Text(label, style: pw.TextStyle(fontSize: 8, color: PdfColors.grey700)),
 ]);

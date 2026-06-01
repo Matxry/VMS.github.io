@@ -100,14 +100,14 @@ Future<void> generarPDFAvances(AppState state) async {
             ),
             ...state.planImplementacion.asMap().entries.map((e) {
               final f  = e.value;
-              final bg = const PdfColor.fromInt(0x00000000);
+              final bg = const PdfColor.fromInt(0x00FFFFFF);
               PdfColor estColor;
               if (f.estado == 'Concluido')       estColor = pGreen;
               else if (f.estado == 'En progreso') estColor = pMed;
               else                                estColor = PdfColors.grey500;
 
               return pw.TableRow(
-                decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF)),
+                decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF))),
                 children: [
                   // Período
                   pw.Padding(
@@ -143,7 +143,7 @@ Future<void> generarPDFAvances(AppState state) async {
                         : pw.Container(
                             padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                             decoration: pw.BoxDecoration(
-                              color: PdfColor.fromInt(0x33ECEFF1),
+                              color: PdfColor.fromInt(0x220D1B2A),
                               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
                               border: pw.Border.all(color: PdfColors.grey400, width: 0.5),
                             ),
