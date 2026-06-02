@@ -3,58 +3,42 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import '../models/models.dart';
 import 'pdf_helpers.dart';
-
-// Re-exportamos para que proyeccion_screen lo pueda importar desde aquí
 export 'pdf_proyeccion.dart';
 
+
+
 Future<void> generarPDFAvances(AppState state) async {
-  final pdf  = await crearDocumento();
+  final pdf       = await crearDocumento();
   final logo      = await cargarLogo();
   final watermark = await cargarWatermark();
 
-  // ── PORTADA ──
+  // PORTADA
   pdf.addPage(pw.Page(
     pageFormat: PdfPageFormat.a4,
     margin: pw.EdgeInsets.zero,
     build: (ctx) => buildPortada(
-      'AVANCES DE IMPLEMENTACIÓN',
-      'VMS Sports — Consultoría Deportiva',
+      'AVANCES DE IMPLEMENTACION',
+      'VMS Sports | Consultoria Deportiva',
       pGreen, state.nombreClub, state.fecha, state.consultor, logo,
     ),
   ));
 
-  // ── ESTADÍSTICAS ──
   final concluidos = state.planImplementacion.where((f) => f.estado == 'Concluido').length;
   final enProgreso = state.planImplementacion.where((f) => f.estado == 'En progreso').length;
   final pendientes = state.planImplementacion.where((f) => f.estado == 'Pendiente').length;
   final total      = state.planImplementacion.length;
 
-  // ── PLAN DE IMPLEMENTACIÓN ──
   pdf.addPage(pw.Page(
     pageFormat: PdfPageFormat.a4,
-    margin: const pw.EdgeInsets.all(24),
+    margin: const pw.EdgeInsets.fromLTRB(24, 16, 24, 16),
     build: (ctx) => pw.Stack(children: [
-      pw.Positioned(
-              top: 0, left: 0, right: 0, bottom: 0,
-              child: pw.Opacity(
-                opacity: watermark != null ? 0.06 : 0.05,
-                child: watermark != null
-                    ? pw.Image(watermark, fit: pw.BoxFit.cover)
-                    : logo != null
-                        ? pw.Center(
-                            child: pw.Transform.rotate(
-                              angle: -0.5,
-                              child: pw.Image(logo, width: 280, height: 280),
-                            ),
-                          )
-                        : pw.SizedBox(),
-              ),
-            ),
+      marcaDeAgua(logo, watermark: watermark),
       pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-        sectionHeader('Plan de Implementación', pGreen),
+        encabezadoPagina(logo),
+        pw.SizedBox(height: 8),
+        sectionHeader('Plan de Implementacion', pGreen),
         pw.SizedBox(height: 12),
-
-        // Tarjetas de estadísticas
+        // Estadísticas
         pw.Row(children: [
           _statBox('Concluidos', '$concluidos', pGreen),
           pw.SizedBox(width: 8),
@@ -65,91 +49,78 @@ Future<void> generarPDFAvances(AppState state) async {
           _statBox('Total', '$total', pPrimary),
         ]),
         pw.SizedBox(height: 10),
-
-        // Barra de progreso
+        // Barra progreso
         if (total > 0) ...[
           pw.Row(children: [
-            pw.Text('Progreso general:',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9, color: pPrimary)),
+            pw.Text('Progreso:',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold,
+                    fontSize: 9, color: pPrimary)),
             pw.SizedBox(width: 8),
             pw.Expanded(child: _barraProgreso(concluidos / total)),
             pw.SizedBox(width: 8),
             pw.Text('${((concluidos / total) * 100).toStringAsFixed(0)}%',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 11, color: pGreen)),
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold,
+                    fontSize: 11, color: pGreen)),
           ]),
           pw.SizedBox(height: 12),
         ],
-
-        // Tabla con observaciones
+        // Tabla
         pw.Table(
-          border: pw.TableBorder.all(color: PdfColor.fromInt(0x44000000), width: 0.5),
+          border: pw.TableBorder.all(color: PdfColors.grey400, width: 0.5),
           columnWidths: const {
             0: pw.FlexColumnWidth(0.9),
             1: pw.FlexColumnWidth(2.2),
             2: pw.FlexColumnWidth(1.1),
-            3: pw.FlexColumnWidth(2),
+            3: pw.FlexColumnWidth(2.0),
           },
           children: [
             pw.TableRow(
-              decoration: const pw.BoxDecoration(color: pGreen),
-              children: ['Período', 'Acción', 'Estado', 'Observaciones']
+              decoration: pw.BoxDecoration(color: pGreen),
+              children: ['Periodo', 'Accion', 'Estado', 'Observaciones']
                   .map((h) => pw.Padding(
                     padding: const pw.EdgeInsets.all(7),
                     child: pw.Text(h, style: headerStyle()),
                   )).toList(),
             ),
-            ...state.planImplementacion.asMap().entries.map((e) {
-              final f  = e.value;
-              final bg = const PdfColor.fromInt(0x00FFFFFF);
+            ...state.planImplementacion.map((f) {
               PdfColor estColor;
-              if (f.estado == 'Concluido')       estColor = pGreen;
+              if (f.estado == 'Concluido') estColor = pGreen;
               else if (f.estado == 'En progreso') estColor = pMed;
-              else                                estColor = PdfColors.grey500;
-
+              else estColor = PdfColors.grey500;
               return pw.TableRow(
-                decoration: pw.BoxDecoration(color: const PdfColor.fromInt(0x00FFFFFF))),
                 children: [
-                  // Período
                   pw.Padding(
                     padding: const pw.EdgeInsets.all(7),
                     child: pw.Text(f.periodo,
-                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9, color: pGreen)),
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold,
+                            fontSize: 9, color: pGreen)),
                   ),
-                  // Acción
                   pw.Padding(
                     padding: const pw.EdgeInsets.all(7),
-                    child: pw.Text(f.accion.isEmpty ? '—' : f.accion, style: cellStyle()),
+                    child: pw.Text(f.accion.isEmpty ? '-' : f.accion,
+                        style: cellStyle()),
                   ),
-                  // Estado con chip de color
                   pw.Padding(
-                    padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 7),
+                    padding: const pw.EdgeInsets.symmetric(
+                        horizontal: 5, vertical: 7),
                     child: pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                      padding: const pw.EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 3),
                       decoration: pw.BoxDecoration(
                         color: estColor,
-                        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                        borderRadius: const pw.BorderRadius.all(
+                            pw.Radius.circular(4)),
                       ),
                       child: pw.Text(f.estado,
-                          style: pw.TextStyle(color: PdfColors.white, fontSize: 7,
-                              fontWeight: pw.FontWeight.bold),
+                          style: pw.TextStyle(color: PdfColors.white,
+                              fontSize: 7, fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.center),
                     ),
                   ),
-                  // Observaciones con fondo suave
                   pw.Padding(
-                    padding: const pw.EdgeInsets.all(5),
-                    child: f.observaciones.isEmpty
-                        ? pw.Text('—', style: pw.TextStyle(fontSize: 9, color: PdfColors.grey500))
-                        : pw.Container(
-                            padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                            decoration: pw.BoxDecoration(
-                              color: PdfColor.fromInt(0x220D1B2A),
-                              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
-                              border: pw.Border.all(color: PdfColors.grey400, width: 0.5),
-                            ),
-                            child: pw.Text(f.observaciones,
-                                style: pw.TextStyle(fontSize: 8, color: PdfColor.fromInt(0xFF2C3E50))),
-                          ),
+                    padding: const pw.EdgeInsets.all(7),
+                    child: pw.Text(f.observaciones.isEmpty ? '-' : f.observaciones,
+                        style: cellStyle()),
                   ),
                 ],
               );
@@ -178,26 +149,24 @@ pw.Widget _barraProgreso(double factor) {
     },
     children: [
       pw.TableRow(children: [
-        pw.Container(
-          height: 10,
-          decoration: pw.BoxDecoration(
-            color: pct > 0 ? pGreen : PdfColors.grey200,
-            borderRadius: pct >= 100
-                ? const pw.BorderRadius.all(pw.Radius.circular(5))
-                : const pw.BorderRadius.only(
-                    topLeft: pw.Radius.circular(5), bottomLeft: pw.Radius.circular(5)),
-          ),
-        ),
-        pw.Container(
-          height: 10,
-          decoration: pw.BoxDecoration(
-            color: PdfColors.grey200,
-            borderRadius: pct <= 0
-                ? const pw.BorderRadius.all(pw.Radius.circular(5))
-                : const pw.BorderRadius.only(
-                    topRight: pw.Radius.circular(5), bottomRight: pw.Radius.circular(5)),
-          ),
-        ),
+        pw.Container(height: 10,
+            decoration: pw.BoxDecoration(
+              color: pct > 0 ? pGreen : PdfColors.grey200,
+              borderRadius: pct >= 100
+                  ? const pw.BorderRadius.all(pw.Radius.circular(5))
+                  : const pw.BorderRadius.only(
+                      topLeft: pw.Radius.circular(5),
+                      bottomLeft: pw.Radius.circular(5)),
+            )),
+        pw.Container(height: 10,
+            decoration: pw.BoxDecoration(
+              color: PdfColors.grey200,
+              borderRadius: pct <= 0
+                  ? const pw.BorderRadius.all(pw.Radius.circular(5))
+                  : const pw.BorderRadius.only(
+                      topRight: pw.Radius.circular(5),
+                      bottomRight: pw.Radius.circular(5)),
+            )),
       ]),
     ],
   );
@@ -211,7 +180,8 @@ pw.Widget _statBox(String label, String value, PdfColor color) => pw.Expanded(
       borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
     ),
     child: pw.Column(children: [
-      pw.Text(value, style: pw.TextStyle(color: PdfColors.white, fontSize: 16, fontWeight: pw.FontWeight.bold)),
+      pw.Text(value, style: pw.TextStyle(color: PdfColors.white,
+          fontSize: 16, fontWeight: pw.FontWeight.bold)),
       pw.Text(label, style: pw.TextStyle(color: PdfColors.white, fontSize: 7)),
     ]),
   ),
