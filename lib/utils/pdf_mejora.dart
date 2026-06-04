@@ -4,6 +4,7 @@ import 'package:printing/printing.dart';
 import '../models/models.dart';
 import 'pdf_helpers.dart';
 
+const _t = PdfColor(0, 0, 0, 0);
 
 Future<void> generarPDFMejora(AppState state) async {
   final pdf       = await crearDocumento();
@@ -18,6 +19,7 @@ Future<void> generarPDFMejora(AppState state) async {
       'PLAN DE MEJORA',
       'VMS Sports | Consultoria Deportiva',
       pBlue, state.nombreClub, state.fecha, state.consultor, logo,
+      tipoOrg: state.tipoOrg,
     ),
   ));
 
@@ -55,19 +57,20 @@ Future<void> generarPDFMejora(AppState state) async {
         pw.Table(
           border: pw.TableBorder.all(color: PdfColors.grey400, width: 0.5),
           columnWidths: const {
-            0: pw.FlexColumnWidth(0.7),
-            1: pw.FlexColumnWidth(1.1),
-            2: pw.FlexColumnWidth(1.6),
-            3: pw.FlexColumnWidth(1.6),
-            4: pw.FlexColumnWidth(1.0),
-            5: pw.FlexColumnWidth(0.8),
+            0: pw.FlexColumnWidth(0.6),
+            1: pw.FlexColumnWidth(1.2),
+            2: pw.FlexColumnWidth(1.0),
+            3: pw.FlexColumnWidth(1.4),
+            4: pw.FlexColumnWidth(1.4),
+            5: pw.FlexColumnWidth(0.9),
             6: pw.FlexColumnWidth(0.8),
+            7: pw.FlexColumnWidth(0.8),
           },
           children: [
             pw.TableRow(
               decoration: pw.BoxDecoration(color: pBlue),
-              children: ['Impacto', 'Area', 'Problema', 'Accion',
-                'Responsable', 'Tiempo', 'Dificultad']
+              children: ['Impacto', 'Punto', 'Area', 'Problema',
+                'Acción', 'Responsable', 'Tiempo', 'Dificultad']
                   .map((h) => pw.Padding(
                     padding: const pw.EdgeInsets.all(6),
                     child: pw.Text(h, style: headerStyle()),
@@ -79,7 +82,9 @@ Future<void> generarPDFMejora(AppState state) async {
               else if (f.nivelImpacto <= 4) impColor = pMed;
               else impColor = pLow;
               return pw.TableRow(
+                decoration: pw.BoxDecoration(color: _t),
                 children: [
+                  // Impacto
                   pw.Padding(
                     padding: const pw.EdgeInsets.all(5),
                     child: pw.Container(
@@ -95,6 +100,25 @@ Future<void> generarPDFMejora(AppState state) async {
                               fontSize: 7, fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.center),
                     ),
+                  ),
+                  // Punto de referencia ej: 4.1 Metodologia
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(5),
+                    child: f.puntoRef.isEmpty
+                        ? pw.Text('-', style: pw.TextStyle(fontSize: 8))
+                        : pw.Container(
+                            padding: const pw.EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 3),
+                            decoration: pw.BoxDecoration(
+                              color: pPrimary,
+                              borderRadius: const pw.BorderRadius.all(
+                                  pw.Radius.circular(4)),
+                            ),
+                            child: pw.Text(f.puntoRef,
+                                style: pw.TextStyle(color: PdfColors.white,
+                                    fontSize: 7,
+                                    fontWeight: pw.FontWeight.bold)),
+                          ),
                   ),
                   _cell(f.area, bold: true),
                   _cell(f.problema),

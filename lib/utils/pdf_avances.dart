@@ -5,7 +5,7 @@ import '../models/models.dart';
 import 'pdf_helpers.dart';
 export 'pdf_proyeccion.dart';
 
-
+const _t = PdfColor(0, 0, 0, 0);
 
 Future<void> generarPDFAvances(AppState state) async {
   final pdf       = await crearDocumento();
@@ -17,9 +17,10 @@ Future<void> generarPDFAvances(AppState state) async {
     pageFormat: PdfPageFormat.a4,
     margin: pw.EdgeInsets.zero,
     build: (ctx) => buildPortada(
-      'AVANCES DE IMPLEMENTACION',
+      'AVANCES DE IMPLEMENTACIÓN',
       'VMS Sports | Consultoria Deportiva',
       pGreen, state.nombreClub, state.fecha, state.consultor, logo,
+      tipoOrg: state.tipoOrg,
     ),
   ));
 
@@ -36,7 +37,7 @@ Future<void> generarPDFAvances(AppState state) async {
       pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
         encabezadoPagina(logo),
         pw.SizedBox(height: 8),
-        sectionHeader('Plan de Implementacion', pGreen),
+        sectionHeader('Plan de Implementación', pGreen),
         pw.SizedBox(height: 12),
         // Estadísticas
         pw.Row(children: [
@@ -76,7 +77,7 @@ Future<void> generarPDFAvances(AppState state) async {
           children: [
             pw.TableRow(
               decoration: pw.BoxDecoration(color: pGreen),
-              children: ['Periodo', 'Accion', 'Estado', 'Observaciones']
+              children: ['Periodo', 'Acción', 'Estado', 'Observaciones']
                   .map((h) => pw.Padding(
                     padding: const pw.EdgeInsets.all(7),
                     child: pw.Text(h, style: headerStyle()),
@@ -88,6 +89,7 @@ Future<void> generarPDFAvances(AppState state) async {
               else if (f.estado == 'En progreso') estColor = pMed;
               else estColor = PdfColors.grey500;
               return pw.TableRow(
+                decoration: pw.BoxDecoration(color: _t),
                 children: [
                   pw.Padding(
                     padding: const pw.EdgeInsets.all(7),

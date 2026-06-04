@@ -136,7 +136,7 @@ class _FilaMejoraCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-            // Problema detectado (solo lectura si es auto)
+            // Problema detectado con referencia de punto
             if (fila.problema.isNotEmpty) ...[
               Container(
                 width: double.infinity,
@@ -147,8 +147,26 @@ class _FilaMejoraCard extends StatelessWidget {
                   border: Border.all(color: color.withOpacity(0.2)),
                 ),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  // Referencia del punto (ej: 4.1 Metodología definida)
+                  if (fila.puntoRef.isNotEmpty) ...[
+                    Row(children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(fila.puntoRef,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 10,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ]),
+                    const SizedBox(height: 6),
+                  ],
                   Text('Problema detectado',
-                      style: TextStyle(fontSize: 10, color: _kGrey, fontWeight: FontWeight.w600)),
+                      style: TextStyle(fontSize: 10, color: _kGrey,
+                          fontWeight: FontWeight.w600)),
                   const SizedBox(height: 3),
                   Text(fila.problema,
                       style: const TextStyle(fontSize: 13, color: _kDark)),
@@ -158,7 +176,7 @@ class _FilaMejoraCard extends StatelessWidget {
             ],
 
             // Campos editables
-            _field('Accion recomendada', fila.accionRecomendada,
+            _field('Acción recomendada', fila.accionRecomendada,
                 (v) => onUpdate(() => fila.accionRecomendada = v), maxLines: 2),
             const SizedBox(height: 8),
             LayoutBuilder(builder: (ctx, constraints) {

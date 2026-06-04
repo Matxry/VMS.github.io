@@ -4,6 +4,7 @@ import 'package:printing/printing.dart';
 import '../models/models.dart';
 import 'pdf_helpers.dart';
 
+const _t = PdfColor(0, 0, 0, 0);
 
 Future<void> generarPDFProyeccion(AppState state) async {
   final pdf       = await crearDocumento();
@@ -15,10 +16,11 @@ Future<void> generarPDFProyeccion(AppState state) async {
     pageFormat: PdfPageFormat.a4,
     margin: pw.EdgeInsets.zero,
     build: (ctx) => buildPortada(
-      'PROYECCION DE RESULTADOS',
+      'PROYECCIÓN DE RESULTADOS',
       'VMS Sports | Consultoria Deportiva',
       const PdfColor.fromInt(0xFF2C3E50),
       state.nombreClub, state.fecha, state.consultor, logo,
+      tipoOrg: state.tipoOrg,
     ),
   ));
 
@@ -31,7 +33,7 @@ Future<void> generarPDFProyeccion(AppState state) async {
       pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
         encabezadoPagina(logo),
         pw.SizedBox(height: 8),
-        sectionHeader('Proyeccion de Resultados',
+        sectionHeader('Proyección de Resultados',
             const PdfColor.fromInt(0xFF2C3E50)),
         pw.SizedBox(height: 12),
         // Resumen
@@ -61,7 +63,7 @@ Future<void> generarPDFProyeccion(AppState state) async {
                   style: pw.TextStyle(color: PdfColors.white,
                       fontSize: 10, fontWeight: pw.FontWeight.bold)),
               pw.Text('de ${state.proyeccion.length} totales',
-                  style: pw.TextStyle(color: const PdfColor(1, 1, 1, 0.7), fontSize: 8)),
+                  style: pw.TextStyle(color: PdfColors.white70, fontSize: 8)),
             ]),
           ]),
         ),
@@ -80,13 +82,14 @@ Future<void> generarPDFProyeccion(AppState state) async {
               decoration: const pw.BoxDecoration(
                   color: PdfColor.fromInt(0xFF2C3E50)),
               children: ['Indicador', 'Estado Actual',
-                'Proyeccion', 'Mejora Esperada']
+                'Proyección', 'Mejora Esperada']
                   .map((h) => pw.Padding(
                     padding: const pw.EdgeInsets.all(8),
                     child: pw.Text(h, style: headerStyle()),
                   )).toList(),
             ),
             ...state.proyeccion.map((f) => pw.TableRow(
+              decoration: pw.BoxDecoration(color: _t),
               children: [
                 _cell(f.indicador, bold: true),
                 _cellColor(f.estadoActual, PdfColors.red50, pUrgent),

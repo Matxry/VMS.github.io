@@ -4,7 +4,8 @@ import 'package:printing/printing.dart';
 import '../models/models.dart';
 import 'pdf_helpers.dart';
 
-
+// Color transparente reutilizable
+const _t = PdfColor(0, 0, 0, 0);
 
 Future<void> generarPDFDiagnostico(AppState state) async {
   final pdf       = await crearDocumento();
@@ -16,9 +17,10 @@ Future<void> generarPDFDiagnostico(AppState state) async {
     pageFormat: PdfPageFormat.a4,
     margin: pw.EdgeInsets.zero,
     build: (ctx) => buildPortada(
-      'INFORME DE DIAGNOSTICO',
+      'INFORME DE DIAGNÓSTICO',
       'VMS Sports | Consultoria Deportiva',
       pPrimary, state.nombreClub, state.fecha, state.consultor, logo,
+      tipoOrg: state.tipoOrg,
     ),
   ));
 
@@ -34,7 +36,7 @@ Future<void> generarPDFDiagnostico(AppState state) async {
           encabezadoPagina(logo),
           pw.SizedBox(height: 8),
           sectionHeader(
-            i == 0 ? 'Diagnostico Detallado' : 'Diagnostico Detallado (cont.)',
+            i == 0 ? 'Diagnostico Detallado — ${state.tipoOrg}' : 'Diagnostico Detallado (cont.)',
             pPrimary,
           ),
           pw.SizedBox(height: 10),
@@ -68,7 +70,7 @@ Future<void> generarPDFDiagnostico(AppState state) async {
         pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
           encabezadoPagina(logo),
           pw.SizedBox(height: 8),
-          sectionHeader('Resumen por Seccion', pPrimary),
+          sectionHeader('Resumen por Sección', pPrimary),
           pw.SizedBox(height: 16),
           ...areasConDatos.map((area) {
             final prom  = area.promedio;
@@ -182,6 +184,7 @@ pw.Widget _areaBlock(AreaModel area) {
           final sub  = e.value;
           final calC = _calColor(sub.calificacion.toDouble());
           return pw.TableRow(
+            decoration: pw.BoxDecoration(color: _t), // TRANSPARENTE
             children: [
               pw.Padding(
                 padding: const pw.EdgeInsets.all(4),

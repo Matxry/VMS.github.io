@@ -89,7 +89,8 @@ pw.Widget marcaDeAgua(pw.ImageProvider? logo, {pw.ImageProvider? watermark}) {
 
 // ── Portada: fondo blanco predominante ──
 pw.Widget buildPortada(String titulo, String subtitulo, PdfColor headerColor,
-    String club, String fecha, String consultor, pw.ImageProvider? logo) {
+    String club, String fecha, String consultor, pw.ImageProvider? logo,
+    {String tipoOrg = 'Club Deportivo'}) {
   return pw.Column(children: [
     // Franja superior delgada azul marino (20%)
     pw.Container(
@@ -131,7 +132,8 @@ pw.Widget buildPortada(String titulo, String subtitulo, PdfColor headerColor,
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    if (club.isNotEmpty)      _portadaRow('Club / Academia', club),
+                    if (tipoOrg.isNotEmpty)   _portadaRow('Tipo', tipoOrg),
+            if (club.isNotEmpty)      _portadaRow('Nombre', club),
                     if (fecha.isNotEmpty)     _portadaRow('Fecha', fecha),
                     if (consultor.isNotEmpty) _portadaRow('Consultor', consultor),
                   ],

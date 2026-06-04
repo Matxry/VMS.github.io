@@ -182,7 +182,7 @@ class _FilaImplementacion extends StatelessWidget {
               TextFormField(
                 initialValue: fila.accion,
                 decoration: InputDecoration(
-                  labelText: 'Accion realizada',
+                  labelText: 'Acción realizada',
                   hintText: 'Describe la accion del mes...',
                   filled: true,
                   fillColor: Colors.white,

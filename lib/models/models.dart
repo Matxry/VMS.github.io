@@ -28,7 +28,7 @@ class SubtemaModel {
   Map<String, dynamic> toJson() => {
     'nombre': nombre,
     'subarea': subarea,
-    'calificacion': calificacion,
+    'calificación': calificacion,
     'observacion': observacion,
     'problemaDetectado': problemaDetectado,
     'imagenes': imagenes.map((img) => base64Encode(img)).toList(),
@@ -38,7 +38,7 @@ class SubtemaModel {
     final sub = SubtemaModel(
       nombre: j['nombre'] ?? '',
       subarea: j['subarea'] ?? '',
-      calificacion: j['calificacion'] ?? 0,
+      calificacion: j['calificación'] ?? 0,
       observacion: j['observacion'] ?? '',
       problemaDetectado: j['problemaDetectado'] ?? '',
     );
@@ -94,6 +94,7 @@ class FilaMejora {
   int    nivelImpacto;
   bool   autoGenerado;
   bool   incluido;
+  String puntoRef; // ej: "4.1 Metodologia definida"
 
   FilaMejora({
     this.area = '',
@@ -106,6 +107,7 @@ class FilaMejora {
     this.nivelImpacto = 3,
     this.autoGenerado = false,
     this.incluido = true,
+    this.puntoRef = '',
   });
 
   String get impactoLabel {
@@ -125,6 +127,7 @@ class FilaMejora {
     'nivelImpacto': nivelImpacto,
     'autoGenerado': autoGenerado,
     'incluido': incluido,
+    'puntoRef': puntoRef,
   };
 
   factory FilaMejora.fromJson(Map<String, dynamic> j) => FilaMejora(
@@ -138,6 +141,7 @@ class FilaMejora {
     nivelImpacto: j['nivelImpacto'] ?? 3,
     autoGenerado: j['autoGenerado'] ?? false,
     incluido: j['incluido'] ?? true,
+    puntoRef: j['puntoRef'] ?? '',
   );
 }
 
@@ -156,7 +160,7 @@ class FilaImplementacion {
 
   Map<String, dynamic> toJson() => {
     'periodo': periodo,
-    'accion': accion,
+    'acción': accion,
     'estado': estado,
     'observaciones': observaciones,
   };
@@ -164,7 +168,7 @@ class FilaImplementacion {
   factory FilaImplementacion.fromJson(Map<String, dynamic> j) =>
       FilaImplementacion(
         periodo: j['periodo'] ?? '',
-        accion: j['accion'] ?? '',
+        accion: j['acción'] ?? '',
         estado: j['estado'] ?? 'Pendiente',
         observaciones: j['observaciones'] ?? '',
       );
@@ -186,14 +190,14 @@ class FilaProyeccion {
   Map<String, dynamic> toJson() => {
     'indicador': indicador,
     'estadoActual': estadoActual,
-    'proyeccion': proyeccion,
+    'proyección': proyeccion,
     'mejoraEsperada': mejoraEsperada,
   };
 
   factory FilaProyeccion.fromJson(Map<String, dynamic> j) => FilaProyeccion(
     indicador: j['indicador'] ?? '',
     estadoActual: j['estadoActual'] ?? '',
-    proyeccion: j['proyeccion'] ?? '',
+    proyeccion: j['proyección'] ?? '',
     mejoraEsperada: j['mejoraEsperada'] ?? '',
   );
 }
@@ -202,6 +206,7 @@ class AppState {
   String nombreClub;
   String fecha;
   String consultor;
+  String tipoOrg; // 'Club Deportivo', 'Institucion Educativa', 'Academia Deportiva'
 
   final List<AreaModel> areas;
   final List<FilaMejora> planMejora;
@@ -212,6 +217,7 @@ class AppState {
     this.nombreClub = '',
     this.fecha = '',
     this.consultor = '',
+    this.tipoOrg = 'Club Deportivo',
     required this.areas,
     required this.planMejora,
     required this.planImplementacion,
@@ -222,10 +228,11 @@ class AppState {
     'nombreClub': nombreClub,
     'fecha': fecha,
     'consultor': consultor,
+    'tipoOrg': tipoOrg,
     'areas': areas.map((a) => a.toJson()).toList(),
     'planMejora': planMejora.map((f) => f.toJson()).toList(),
     'planImplementacion': planImplementacion.map((f) => f.toJson()).toList(),
-    'proyeccion': proyeccion.map((f) => f.toJson()).toList(),
+    'proyección': proyeccion.map((f) => f.toJson()).toList(),
   };
 
   factory AppState.fromJson(Map<String, dynamic> j, List<AreaModel> areasBase) {
@@ -255,6 +262,7 @@ class AppState {
       nombreClub: j['nombreClub'] ?? '',
       fecha: j['fecha'] ?? '',
       consultor: j['consultor'] ?? '',
+      tipoOrg: j['tipoOrg'] ?? 'Club Deportivo',
       areas: areas,
       planMejora: (j['planMejora'] as List? ?? [])
           .map((f) => FilaMejora.fromJson(f as Map<String, dynamic>))
@@ -262,7 +270,7 @@ class AppState {
       planImplementacion: (j['planImplementacion'] as List? ?? [])
           .map((f) => FilaImplementacion.fromJson(f as Map<String, dynamic>))
           .toList(),
-      proyeccion: (j['proyeccion'] as List? ?? [])
+      proyeccion: (j['proyección'] as List? ?? [])
           .map((f) => FilaProyeccion.fromJson(f as Map<String, dynamic>))
           .toList(),
     );
@@ -270,11 +278,18 @@ class AppState {
 
   void sincronizarProblemas() {
     final nuevos = <FilaMejora>[];
-    for (final area in areas) {
-      for (final sub in area.subtemasConProblema) {
+    for (int aIdx = 0; aIdx < areas.length; aIdx++) {
+      final area = areas[aIdx];
+      final aNum = aIdx + 1; // número del área: 1, 2, 3...
+      int sCount = 0;
+      for (final sub in area.subtemas) {
+        sCount++;
+        if (sub.problemaDetectado.isEmpty) continue;
+        final puntoRef = '$aNum.$sCount ${sub.nombre}';
         nuevos.add(FilaMejora(
           area: area.nombre,
           problema: sub.problemaDetectado,
+          puntoRef: puntoRef,
           accionRecomendada: '',
           nivelImpacto: sub.impactoAutomatico,
           autoGenerado: true,
@@ -286,7 +301,7 @@ class AppState {
     planMejora.clear();
     for (final nuevo in nuevos) {
       final existente = manuales.firstWhere(
-        (m) => m.area == nuevo.area && m.problema == nuevo.problema,
+        (m) => m.area == nuevo.area && m.puntoRef == nuevo.puntoRef,
         orElse: () => nuevo,
       );
       existente.autoGenerado = true;
@@ -307,7 +322,7 @@ extension SubtemaModelJson on SubtemaModel {
   Map<String, dynamic> toJson() => {
     'nombre': nombre,
     'subarea': subarea,
-    'calificacion': calificacion,
+    'calificación': calificacion,
     'observacion': observacion,
     'problemaDetectado': problemaDetectado,
   };
@@ -332,6 +347,7 @@ extension FilaMejoraJson on FilaMejora {
     'nivelImpacto': nivelImpacto,
     'autoGenerado': autoGenerado,
     'incluido': incluido,
+    'puntoRef': puntoRef,
   };
 
   static FilaMejora fromJson(Map<String, dynamic> j) => FilaMejora(
@@ -345,13 +361,14 @@ extension FilaMejoraJson on FilaMejora {
     nivelImpacto: j['nivelImpacto'] ?? 3,
     autoGenerado: j['autoGenerado'] ?? false,
     incluido: j['incluido'] ?? true,
+    puntoRef: j['puntoRef'] ?? '',
   );
 }
 
 extension FilaImplementacionJson on FilaImplementacion {
   Map<String, dynamic> toJson() => {
     'periodo': periodo,
-    'accion': accion,
+    'acción': accion,
     'estado': estado,
     'observaciones': observaciones,
   };
@@ -359,7 +376,7 @@ extension FilaImplementacionJson on FilaImplementacion {
   static FilaImplementacion fromJson(Map<String, dynamic> j) =>
       FilaImplementacion(
         periodo: j['periodo'] ?? '',
-        accion: j['accion'] ?? '',
+        accion: j['acción'] ?? '',
         estado: j['estado'] ?? 'Pendiente',
         observaciones: j['observaciones'] ?? '',
       );
@@ -369,14 +386,14 @@ extension FilaProyeccionJson on FilaProyeccion {
   Map<String, dynamic> toJson() => {
     'indicador': indicador,
     'estadoActual': estadoActual,
-    'proyeccion': proyeccion,
+    'proyección': proyeccion,
     'mejoraEsperada': mejoraEsperada,
   };
 
   static FilaProyeccion fromJson(Map<String, dynamic> j) => FilaProyeccion(
     indicador: j['indicador'] ?? '',
     estadoActual: j['estadoActual'] ?? '',
-    proyeccion: j['proyeccion'] ?? '',
+    proyeccion: j['proyección'] ?? '',
     mejoraEsperada: j['mejoraEsperada'] ?? '',
   );
 }
@@ -386,10 +403,11 @@ extension AppStateJson on AppState {
     'nombreClub': nombreClub,
     'fecha': fecha,
     'consultor': consultor,
+    'tipoOrg': tipoOrg,
     'areas': areas.map((a) => a.toJson()).toList(),
     'planMejora': planMejora.map((f) => f.toJson()).toList(),
     'planImplementacion': planImplementacion.map((f) => f.toJson()).toList(),
-    'proyeccion': proyeccion.map((f) => f.toJson()).toList(),
+    'proyección': proyeccion.map((f) => f.toJson()).toList(),
   };
 
   static AppState fromJson(Map<String, dynamic> j, List<AreaModel> baseAreas) {
@@ -400,7 +418,7 @@ extension AppStateJson on AppState {
       final subtemasJ = areaJ['subtemas'] as List? ?? [];
       for (int k = 0; k < subtemasJ.length && k < baseAreas[i].subtemas.length; k++) {
         final sj = subtemasJ[k] as Map<String, dynamic>;
-        baseAreas[i].subtemas[k].calificacion      = sj['calificacion'] ?? 0;
+        baseAreas[i].subtemas[k].calificacion      = sj['calificación'] ?? 0;
         baseAreas[i].subtemas[k].observacion       = sj['observacion'] ?? '';
         baseAreas[i].subtemas[k].problemaDetectado = sj['problemaDetectado'] ?? '';
       }
@@ -410,6 +428,7 @@ extension AppStateJson on AppState {
       nombreClub: j['nombreClub'] ?? '',
       fecha: j['fecha'] ?? '',
       consultor: j['consultor'] ?? '',
+      tipoOrg: j['tipoOrg'] ?? 'Club Deportivo',
       areas: baseAreas,
       planMejora: (j['planMejora'] as List? ?? [])
           .map((e) => FilaMejoraJson.fromJson(e))
@@ -417,7 +436,7 @@ extension AppStateJson on AppState {
       planImplementacion: (j['planImplementacion'] as List? ?? [])
           .map((e) => FilaImplementacionJson.fromJson(e))
           .toList(),
-      proyeccion: (j['proyeccion'] as List? ?? [])
+      proyeccion: (j['proyección'] as List? ?? [])
           .map((e) => FilaProyeccionJson.fromJson(e))
           .toList(),
     );

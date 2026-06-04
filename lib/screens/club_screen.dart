@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../models/club_model.dart';
+import '../models/club_model.dart';
 import '../utils/storage_service.dart';
 import '../data/initial_data.dart';
 import 'diagnostico_screen.dart';
@@ -38,6 +39,7 @@ class _ClubScreenState extends State<ClubScreen> {
     s.nombreClub = widget.club.nombre;
     s.consultor  = widget.club.consultor;
     s.fecha      = widget.club.fecha;
+    s.tipoOrg    = widget.club.tipo.labelCompleto;
     setState(() { state = s; _cargando = false; });
   }
 
@@ -47,6 +49,7 @@ class _ClubScreenState extends State<ClubScreen> {
     widget.club.nombre    = state.nombreClub;
     widget.club.consultor = state.consultor;
     widget.club.fecha     = state.fecha;
+    state.tipoOrg         = widget.club.tipo.labelCompleto;
     widget.club.ultimaModificacion = DateTime.now();
     await StorageService.guardar(widget.club.id, state);
     await StorageService.actualizarClub(widget.club);
@@ -184,16 +187,25 @@ class _ClubScreenState extends State<ClubScreen> {
               const SizedBox(height: 8),
               Text(widget.club.nombre,
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
+                      color: Colors.white, fontSize: 20,
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center),
+              const SizedBox(height: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white30),
+                ),
+                child: Text(widget.club.tipo.labelCompleto,
+                    style: const TextStyle(color: Colors.white, fontSize: 12,
+                        fontWeight: FontWeight.w500)),
+              ),
               if (widget.club.consultor.isNotEmpty) ...[
                 const SizedBox(height: 4),
                 Text(widget.club.consultor,
-                    style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontSize: 12)),
+                    style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 12)),
               ],
             ]),
           ),
@@ -266,7 +278,7 @@ class _ClubScreenState extends State<ClubScreen> {
         'Problemas y acciones', kNavy, _bdMejora()),
     _card(ctx, 2, Icons.rocket_launch_outlined, 'Avances',
         'Plan de implementacion', const Color(0xFF1C2E3E), _bdAvances()),
-    _card(ctx, 3, Icons.show_chart_outlined, 'Proyeccion',
+    _card(ctx, 3, Icons.show_chart_outlined, 'Proyección',
         'Indicadores y resultados', const Color(0xFF2C3E50), _bdProyeccion()),
   ];
 
