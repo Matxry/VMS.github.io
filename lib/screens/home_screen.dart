@@ -109,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: nombreCtrl,
                 decoration: InputDecoration(
                   labelText: 'Nombre *',
-                  hintText: 'Ej: Real Madrid',
+                 
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8)),
                   prefixIcon: const Icon(Icons.badge_outlined, size: 18),
@@ -280,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.fromLTRB(
                             isWide ? 40 : 16, 20, isWide ? 40 : 16, 8),
                         child: Row(children: [
-                          const Text('Clubes / Academias',
+                          const Text('Organizaciones',
                               style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
@@ -309,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: _nuevoClub,
         backgroundColor: kPrimary,
         icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text('Nuevo Club',
+        label: const Text('Nueva Organización',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
@@ -384,13 +384,13 @@ class _HomeScreenState extends State<HomeScreen> {
           Icon(Icons.sports_soccer,
               size: 64, color: kPrimary.withOpacity(0.2)),
           const SizedBox(height: 16),
-          const Text('No hay clubes registrados',
+          const Text('No hay organizaciones registradas',
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: kPrimary)),
           const SizedBox(height: 8),
-          Text('Toca el boton + para agregar tu primer club',
+          Text('Toca el boton + para agregar tu primera organización',
               style: TextStyle(fontSize: 13, color: kGrey)),
           const SizedBox(height: 80),
         ],

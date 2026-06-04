@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../models/club_model.dart';
-import '../models/club_model.dart';
 import '../utils/storage_service.dart';
 import '../data/initial_data.dart';
 import 'diagnostico_screen.dart';

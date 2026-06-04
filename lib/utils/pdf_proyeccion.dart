@@ -4,7 +4,7 @@ import 'package:printing/printing.dart';
 import '../models/models.dart';
 import 'pdf_helpers.dart';
 
-const _t = PdfColor(0, 0, 0, 0);
+ 
 
 Future<void> generarPDFProyeccion(AppState state) async {
   final pdf       = await crearDocumento();
@@ -63,7 +63,7 @@ Future<void> generarPDFProyeccion(AppState state) async {
                   style: pw.TextStyle(color: PdfColors.white,
                       fontSize: 10, fontWeight: pw.FontWeight.bold)),
               pw.Text('de ${state.proyeccion.length} totales',
-                  style: pw.TextStyle(color: PdfColors.white70, fontSize: 8)),
+                  style: pw.TextStyle(color: const PdfColor(1, 1, 1, 0.7), fontSize: 8)),
             ]),
           ]),
         ),
@@ -89,7 +89,7 @@ Future<void> generarPDFProyeccion(AppState state) async {
                   )).toList(),
             ),
             ...state.proyeccion.map((f) => pw.TableRow(
-              decoration: pw.BoxDecoration(color: _t),
+             
               children: [
                 _cell(f.indicador, bold: true),
                 _cellColor(f.estadoActual, PdfColors.red50, pUrgent),

@@ -4,7 +4,7 @@ import 'package:printing/printing.dart';
 import '../models/models.dart';
 import 'pdf_helpers.dart';
 
-const _t = PdfColor(0, 0, 0, 0);
+
 
 Future<void> generarPDFMejora(AppState state) async {
   final pdf       = await crearDocumento();
@@ -82,7 +82,7 @@ Future<void> generarPDFMejora(AppState state) async {
               else if (f.nivelImpacto <= 4) impColor = pMed;
               else impColor = pLow;
               return pw.TableRow(
-                decoration: pw.BoxDecoration(color: _t),
+                
                 children: [
                   // Impacto
                   pw.Padding(

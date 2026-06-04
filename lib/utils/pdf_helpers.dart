@@ -132,8 +132,7 @@ pw.Widget buildPortada(String titulo, String subtitulo, PdfColor headerColor,
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    if (tipoOrg.isNotEmpty)   _portadaRow('Tipo', tipoOrg),
-            if (club.isNotEmpty)      _portadaRow('Nombre', club),
+                  if (club.isNotEmpty) _portadaRow(tipoOrg, club),
                     if (fecha.isNotEmpty)     _portadaRow('Fecha', fecha),
                     if (consultor.isNotEmpty) _portadaRow('Consultor', consultor),
                   ],
