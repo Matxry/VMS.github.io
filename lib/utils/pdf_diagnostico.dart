@@ -27,22 +27,7 @@ Future<void> generarPDFDiagnostico(AppState state) async {
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(24),
       build: (ctx) => pw.Stack(children: [
-        pw.Positioned(
-              top: 0, left: 0, right: 0, bottom: 0,
-              child: pw.Opacity(
-                opacity: watermark != null ? 0.06 : 0.05,
-                child: watermark != null
-                    ? pw.Image(watermark, fit: pw.BoxFit.cover)
-                    : logo != null
-                        ? pw.Center(
-                            child: pw.Transform.rotate(
-                              angle: -0.5,
-                              child: pw.Image(logo, width: 280, height: 280),
-                            ),
-                          )
-                        : pw.SizedBox(),
-              ),
-            ),
+        marcaDeAgua(logo, watermark: watermark),
         pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
           encabezadoPagina(logo),
           pw.SizedBox(height: 8),
@@ -77,37 +62,20 @@ Future<void> generarPDFDiagnostico(AppState state) async {
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(24),
       build: (ctx) => pw.Stack(children: [
-        pw.Positioned(
-              top: 0, left: 0, right: 0, bottom: 0,
-              child: pw.Opacity(
-                opacity: watermark != null ? 0.06 : 0.05,
-                child: watermark != null
-                    ? pw.Image(watermark, fit: pw.BoxFit.cover)
-                    : logo != null
-                        ? pw.Center(
-                            child: pw.Transform.rotate(
-                              angle: -0.5,
-                              child: pw.Image(logo, width: 280, height: 280),
-                            ),
-                          )
-                        : pw.SizedBox(),
-              ),
-            ),
+        marcaDeAgua(logo, watermark: watermark),
         pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
           sectionHeader('Resumen por Sección — Calificación Promedio', pPrimary),
           pw.SizedBox(height: 20),
-          // Barras horizontales por área
           ...areasConDatos.map((area) {
             final prom  = area.promedio;
             final color = _calColor(prom);
             final nProb = area.totalProblemas;
-            const barW  = 380.0;  // ancho máximo de barra
+            const barW  = 380.0;
             final fill  = barW * (prom / 5);
 
             return pw.Padding(
               padding: const pw.EdgeInsets.only(bottom: 16),
               child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                // Nombre + promedio + badge problemas
                 pw.Row(children: [
                   pw.Expanded(
                     child: pw.Text(area.nombre,
@@ -129,7 +97,6 @@ Future<void> generarPDFDiagnostico(AppState state) async {
                   pw.Text('/5', style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey500)),
                 ]),
                 pw.SizedBox(height: 5),
-                // Barra fondo
                 pw.Stack(children: [
                   pw.Container(
                     width: double.infinity, height: 18,
@@ -138,7 +105,6 @@ Future<void> generarPDFDiagnostico(AppState state) async {
                       borderRadius: pw.BorderRadius.all(pw.Radius.circular(9)),
                     ),
                   ),
-                  // Relleno coloreado
                   pw.Container(
                     width: fill, height: 18,
                     decoration: pw.BoxDecoration(
@@ -157,7 +123,6 @@ Future<void> generarPDFDiagnostico(AppState state) async {
                   ),
                 ]),
                 pw.SizedBox(height: 3),
-                // Escala 1-5
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: ['1\nMuy def.', '2\nDefic.', '3\nRegular', '4\nBueno', '5\nExcelente']
@@ -171,7 +136,6 @@ Future<void> generarPDFDiagnostico(AppState state) async {
           }),
 
           pw.SizedBox(height: 16),
-          // Leyenda de colores
           pw.Container(
             padding: const pw.EdgeInsets.all(10),
             decoration: const pw.BoxDecoration(
@@ -240,7 +204,7 @@ pw.Widget _areaBlock(AreaModel area) {
       columnWidths: const {0: pw.FlexColumnWidth(2.5), 1: pw.FlexColumnWidth(0.55)},
       children: [
         pw.TableRow(
-          
+          decoration: const pw.BoxDecoration(color: PdfColor.fromInt(0xFF1E3A5C)),
           children: ['Subtema / Observaciones', 'Cal.'].map((h) => pw.Padding(
             padding: const pw.EdgeInsets.all(4),
             child: pw.Text(h, style: pw.TextStyle(
@@ -251,17 +215,14 @@ pw.Widget _areaBlock(AreaModel area) {
           final sub  = e.value;
           final calC = _calColor(sub.calificacion.toDouble());
           return pw.TableRow(
-            decoration: const pw.BoxDecoration(color: PdfColor.fromInt(0x00000000)),
             children: [
               pw.Padding(
                 padding: const pw.EdgeInsets.all(4),
                 child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                  // Nombre del subtema
                   pw.Text(sub.nombre,
                       style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold, color: pPrimary)),
                   pw.Text(sub.subarea,
                       style: const pw.TextStyle(fontSize: 7, color: PdfColors.grey500)),
-                  // Observaciones
                   if (sub.observacion.isNotEmpty) ...[
                     pw.SizedBox(height: 3),
                     pw.Container(
@@ -276,7 +237,6 @@ pw.Widget _areaBlock(AreaModel area) {
                           style: const pw.TextStyle(fontSize: 7, color: PdfColor.fromInt(0xFF2C3E50))),
                     ),
                   ],
-                  // Problema detectado
                   if (sub.problemaDetectado.isNotEmpty) ...[
                     pw.SizedBox(height: 3),
                     pw.Container(
@@ -291,7 +251,6 @@ pw.Widget _areaBlock(AreaModel area) {
                           style: const pw.TextStyle(fontSize: 7, color: pUrgent)),
                     ),
                   ],
-                  // Imágenes adjuntas (miniaturas)
                   if (sub.imagenes.isNotEmpty) ...[
                     pw.SizedBox(height: 3),
                     pw.Row(children: [
@@ -313,7 +272,6 @@ pw.Widget _areaBlock(AreaModel area) {
                   ],
                 ]),
               ),
-              // Calificación
               pw.Padding(
                 padding: const pw.EdgeInsets.all(4),
                 child: pw.Center(

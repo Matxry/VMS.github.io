@@ -5,7 +5,7 @@ import '../models/models.dart';
 import 'pdf_helpers.dart';
 export 'pdf_proyeccion.dart';
 
-const _t = PdfColor(0, 0, 0, 0);
+
 
 Future<void> generarPDFAvances(AppState state) async {
   final pdf       = await crearDocumento();
@@ -89,7 +89,7 @@ Future<void> generarPDFAvances(AppState state) async {
               else if (f.estado == 'En progreso') estColor = pMed;
               else estColor = PdfColors.grey500;
               return pw.TableRow(
-                decoration: pw.BoxDecoration(color: _t),
+               
                 children: [
                   pw.Padding(
                     padding: const pw.EdgeInsets.all(7),

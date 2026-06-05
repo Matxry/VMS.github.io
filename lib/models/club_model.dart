@@ -1,11 +1,11 @@
-enum TipoOrganizacion { club, institucion, academia }
+enum TipoOrganizacion { club, institucion, Liga }
 
 extension TipoOrganizacionExt on TipoOrganizacion {
   String get label {
     switch (this) {
       case TipoOrganizacion.club:        return 'Club';
       case TipoOrganizacion.institucion: return 'Institución';
-      case TipoOrganizacion.academia:    return 'Academia';
+      case TipoOrganizacion.Liga:    return 'Liga';
     }
   }
 
@@ -13,7 +13,7 @@ extension TipoOrganizacionExt on TipoOrganizacion {
     switch (this) {
       case TipoOrganizacion.club:        return 'Club Deportivo';
       case TipoOrganizacion.institucion: return 'Institucion Educativa';
-      case TipoOrganizacion.academia:    return 'Academia Deportiva';
+      case TipoOrganizacion.Liga:    return 'Liga deportiva';
     }
   }
 
@@ -21,7 +21,7 @@ extension TipoOrganizacionExt on TipoOrganizacion {
     switch (this) {
       case TipoOrganizacion.club:        return 'club';
       case TipoOrganizacion.institucion: return 'institución';
-      case TipoOrganizacion.academia:    return 'academia';
+      case TipoOrganizacion.Liga:        return 'Liga';
     }
   }
 }

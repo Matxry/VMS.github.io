@@ -65,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   case TipoOrganizacion.institucion:
                     icono = Icons.school_outlined;
                     break;
-                  case TipoOrganizacion.academia:
-                    icono = Icons.fitness_center_outlined;
+                  case TipoOrganizacion.Liga:
+                    icono = Icons.sports;
                     break;
                 }
                 return Expanded(
@@ -322,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
         icono = Icons.sports_soccer; break;
       case TipoOrganizacion.institucion:
         icono = Icons.school_outlined; break;
-      case TipoOrganizacion.academia:
+      case TipoOrganizacion.Liga:
         icono = Icons.fitness_center_outlined; break;
     }
     return Container(

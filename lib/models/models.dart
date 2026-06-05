@@ -92,6 +92,7 @@ class FilaMejora {
   String dificultad;
   String impactoEsperado;
   int    nivelImpacto;
+  int    calificacion;
   bool   autoGenerado;
   bool   incluido;
   String puntoRef; // ej: "4.1 Metodologia definida"
@@ -105,6 +106,7 @@ class FilaMejora {
     this.dificultad = '',
     this.impactoEsperado = '',
     this.nivelImpacto = 3,
+    this.calificacion = 0,
     this.autoGenerado = false,
     this.incluido = true,
     this.puntoRef = '',
@@ -284,7 +286,7 @@ class AppState {
       int sCount = 0;
       for (final sub in area.subtemas) {
         sCount++;
-        if (sub.problemaDetectado.isEmpty) continue;
+        if (sub.calificacion <= 0) continue;
         final puntoRef = '$aNum.$sCount ${sub.nombre}';
         nuevos.add(FilaMejora(
           area: area.nombre,

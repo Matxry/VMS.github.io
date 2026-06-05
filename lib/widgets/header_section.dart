@@ -25,7 +25,7 @@ class HeaderSection extends StatelessWidget {
             LayoutBuilder(builder: (ctx, constraints) {
               final isWide = constraints.maxWidth >= 600;
               final fields = [
-                _field('Club / Academia', state.nombreClub, (v) => state.nombreClub = v),
+                _field('Organización', state.nombreClub, (v) => state.nombreClub = v),
                 _field('Fecha', state.fecha, (v) => state.fecha = v),
                 _field('Consultor', state.consultor, (v) => state.consultor = v),
               ];
