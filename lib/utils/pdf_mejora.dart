@@ -55,18 +55,19 @@ Future<void> generarPDFMejora(AppState state) async {
         pw.Table(
           border: pw.TableBorder.all(color: PdfColors.grey400, width: 0.5),
           columnWidths: const {
-            0: pw.FlexColumnWidth(0.7),
-            1: pw.FlexColumnWidth(1.1),
-            2: pw.FlexColumnWidth(1.6),
-            3: pw.FlexColumnWidth(1.6),
-            4: pw.FlexColumnWidth(1.0),
-            5: pw.FlexColumnWidth(0.8),
-            6: pw.FlexColumnWidth(0.8),
+              0: pw.FlexColumnWidth(0.55),
+              1: pw.FlexColumnWidth(0.55),
+              2: pw.FlexColumnWidth(1.3),
+              3: pw.FlexColumnWidth(1.1),
+              4: pw.FlexColumnWidth(1.5),
+              5: pw.FlexColumnWidth(1.0),
+              6: pw.FlexColumnWidth(0.8),
+              7: pw.FlexColumnWidth(0.8),
           },
           children: [
             pw.TableRow(
               decoration: pw.BoxDecoration(color: pBlue),
-              children: ['Impacto', 'Area', 'Problema', 'Accion',
+              children: ['Impacto', 'Area', 'Accion',
                 'Responsable', 'Tiempo', 'Dificultad']
                   .map((h) => pw.Padding(
                     padding: const pw.EdgeInsets.all(6),
@@ -97,7 +98,6 @@ Future<void> generarPDFMejora(AppState state) async {
                     ),
                   ),
                   _cell(f.area, bold: true),
-                  _cell(f.problema),
                   _cell(f.accionRecomendada),
                   _cell(f.responsable),
                   _cell(f.tiempoEstimado),
