@@ -39,7 +39,9 @@ class _ClubScreenState extends State<ClubScreen> {
     s.consultor  = widget.club.consultor;
     s.fecha      = widget.club.fecha;
     s.tipoOrg    = widget.club.tipo.labelCompleto;
+    s.sincronizarProblemas();
     setState(() { state = s; _cargando = false; });
+      
   }
 
   Future<void> _guardar() async {
@@ -289,9 +291,9 @@ class _ClubScreenState extends State<ClubScreen> {
   }
 
   String _bdMejora() {
-    final n = state.areas.expand((a) => a.subtemas)
-        .where((s) => s.problemaDetectado.isNotEmpty).length;
-    return '${state.planMejora.length} acciones · $n problemas';
+  final calificados = state.areas.expand((a) => a.subtemas)
+      .where((s) => s.calificacion > 0).length;
+  return '$calificados puntos · ${state.planMejora.length} acciones';
   }
 
   String _bdAvances() {

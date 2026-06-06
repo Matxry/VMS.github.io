@@ -92,10 +92,10 @@ class FilaMejora {
   String dificultad;
   String impactoEsperado;
   int    nivelImpacto;
-  int    calificacion;
   bool   autoGenerado;
   bool   incluido;
-  String puntoRef; // ej: "4.1 Metodologia definida"
+  String puntoRef;     // ej: "4.1 Metodología definida"
+  int    calificacion; // calificación dada en el diagnóstico (1-5)
 
   FilaMejora({
     this.area = '',
@@ -106,10 +106,10 @@ class FilaMejora {
     this.dificultad = '',
     this.impactoEsperado = '',
     this.nivelImpacto = 3,
-    this.calificacion = 0,
     this.autoGenerado = false,
     this.incluido = true,
     this.puntoRef = '',
+    this.calificacion = 0,
   });
 
   String get impactoLabel {
@@ -130,6 +130,7 @@ class FilaMejora {
     'autoGenerado': autoGenerado,
     'incluido': incluido,
     'puntoRef': puntoRef,
+    'calificacion': calificacion,
   };
 
   factory FilaMejora.fromJson(Map<String, dynamic> j) => FilaMejora(
@@ -144,6 +145,7 @@ class FilaMejora {
     autoGenerado: j['autoGenerado'] ?? false,
     incluido: j['incluido'] ?? true,
     puntoRef: j['puntoRef'] ?? '',
+    calificacion: j['calificacion'] ?? 0,
   );
 }
 
@@ -282,37 +284,55 @@ class AppState {
     final nuevos = <FilaMejora>[];
     for (int aIdx = 0; aIdx < areas.length; aIdx++) {
       final area = areas[aIdx];
-      final aNum = aIdx + 1; // número del área: 1, 2, 3...
-      int sCount = 0;
-      for (final sub in area.subtemas) {
-        sCount++;
+      final aNum = aIdx + 1;
+      for (int sIdx = 0; sIdx < area.subtemas.length; sIdx++) {
+        final sub  = area.subtemas[sIdx];
+        final sNum = sIdx + 1;
+        // Solo subtemas con calificacion registrada
         if (sub.calificacion <= 0) continue;
-        final puntoRef = '$aNum.$sCount ${sub.nombre}';
+        final puntoRef = '$aNum.$sNum ${sub.nombre}';
         nuevos.add(FilaMejora(
           area: area.nombre,
           problema: sub.problemaDetectado,
           puntoRef: puntoRef,
+          calificacion: sub.calificacion,
           accionRecomendada: '',
           nivelImpacto: sub.impactoAutomatico,
           autoGenerado: true,
-          incluido: sub.calificacion < 4,
+          // Cal 1-3 incluido por defecto, cal 4-5 opcional (usuario decide)
+          incluido: sub.calificacion <= 3,
         ));
       }
     }
+
+    // Guardar mapa de lo que el usuario ya escribio indexado por puntoRef
+    final anteriores = <String, FilaMejora>{};
+    for (final f in planMejora) {
+      if (f.autoGenerado) anteriores[f.puntoRef] = f;
+    }
     final manuales = planMejora.where((f) => !f.autoGenerado).toList();
+
     planMejora.clear();
     for (final nuevo in nuevos) {
-      final existente = manuales.firstWhere(
-        (m) => m.area == nuevo.area && m.puntoRef == nuevo.puntoRef,
-        orElse: () => nuevo,
-      );
-      existente.autoGenerado = true;
-      existente.nivelImpacto = nuevo.nivelImpacto;
-      planMejora.add(existente);
+      final prev = anteriores[nuevo.puntoRef];
+      if (prev != null) {
+        // Actualizar solo datos del diagnostico, preservar lo escrito por el usuario
+        prev.calificacion = nuevo.calificacion;
+        prev.nivelImpacto = nuevo.nivelImpacto;
+        prev.area         = nuevo.area;
+        prev.problema     = nuevo.problema; // actualizar si cambió
+        // Respetar el toggle incluido/opcional que el usuario haya cambiado
+        // Solo forzar si es la primera vez (accion vacia = nunca editado)
+        if (prev.accionRecomendada.isEmpty && prev.responsable.isEmpty) {
+          prev.incluido = nuevo.incluido;
+        }
+        planMejora.add(prev);
+      } else {
+        planMejora.add(nuevo);
+      }
     }
-    for (final m in manuales) {
-      if (!planMejora.contains(m)) planMejora.add(m);
-    }
+    // Agregar filas manuales al final
+    planMejora.addAll(manuales);
   }
 }
 
@@ -350,6 +370,7 @@ extension FilaMejoraJson on FilaMejora {
     'autoGenerado': autoGenerado,
     'incluido': incluido,
     'puntoRef': puntoRef,
+    'calificacion': calificacion,
   };
 
   static FilaMejora fromJson(Map<String, dynamic> j) => FilaMejora(
@@ -364,6 +385,7 @@ extension FilaMejoraJson on FilaMejora {
     autoGenerado: j['autoGenerado'] ?? false,
     incluido: j['incluido'] ?? true,
     puntoRef: j['puntoRef'] ?? '',
+    calificacion: j['calificacion'] ?? 0,
   );
 }
 

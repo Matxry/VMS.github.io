@@ -22,11 +22,17 @@ class _MejoraScreenState extends State<MejoraScreen> {
   @override
   void initState() {
     super.initState();
-    // Sincronizar problemas del diagnostico al cargar la pantalla
-    widget.state.sincronizarProblemas();
+    // Sincronizar despues del primer frame para no borrar datos
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onUpdate(() => widget.state.sincronizarProblemas());
+      if (mounted) setState(() {});
+    });
   }
 
-  void _upd(VoidCallback fn) { widget.onUpdate(fn); setState(() {}); }
+  void _upd(VoidCallback fn) {
+    widget.onUpdate(fn);
+    setState(() {});
+  }
 
   Future<void> _generarPDF() async {
     try {
