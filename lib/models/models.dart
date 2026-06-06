@@ -94,6 +94,7 @@ class FilaMejora {
   int    nivelImpacto;
   bool   autoGenerado;
   bool   incluido;
+  bool   imprimirProblema; // controla si el problema se imprime en PDF
   String puntoRef;     // ej: "4.1 Metodología definida"
   int    calificacion; // calificación dada en el diagnóstico (1-5)
 
@@ -108,6 +109,7 @@ class FilaMejora {
     this.nivelImpacto = 3,
     this.autoGenerado = false,
     this.incluido = true,
+    this.imprimirProblema = true,
     this.puntoRef = '',
     this.calificacion = 0,
   });
@@ -129,6 +131,7 @@ class FilaMejora {
     'nivelImpacto': nivelImpacto,
     'autoGenerado': autoGenerado,
     'incluido': incluido,
+    'imprimirProblema': imprimirProblema,
     'puntoRef': puntoRef,
     'calificacion': calificacion,
   };
@@ -144,6 +147,7 @@ class FilaMejora {
     nivelImpacto: j['nivelImpacto'] ?? 3,
     autoGenerado: j['autoGenerado'] ?? false,
     incluido: j['incluido'] ?? true,
+    imprimirProblema: j['imprimirProblema'] ?? true,
     puntoRef: j['puntoRef'] ?? '',
     calificacion: j['calificacion'] ?? 0,
   );
@@ -369,6 +373,7 @@ extension FilaMejoraJson on FilaMejora {
     'nivelImpacto': nivelImpacto,
     'autoGenerado': autoGenerado,
     'incluido': incluido,
+    'imprimirProblema': imprimirProblema,
     'puntoRef': puntoRef,
     'calificacion': calificacion,
   };
@@ -384,6 +389,7 @@ extension FilaMejoraJson on FilaMejora {
     nivelImpacto: j['nivelImpacto'] ?? 3,
     autoGenerado: j['autoGenerado'] ?? false,
     incluido: j['incluido'] ?? true,
+    imprimirProblema: j['imprimirProblema'] ?? true,
     puntoRef: j['puntoRef'] ?? '',
     calificacion: j['calificacion'] ?? 0,
   );

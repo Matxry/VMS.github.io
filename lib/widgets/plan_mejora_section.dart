@@ -197,27 +197,71 @@ class _FilaMejoraCardState extends State<_FilaMejoraCard> {
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-              // Problema (si existe)
-              if (fila.problema.isNotEmpty) ...[
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.06),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: color.withOpacity(0.2)),
-                  ),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // ── Problema: editable + toggle imprimir ──
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.06),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: color.withOpacity(0.2)),
+                ),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
                     Text('Problema detectado',
                         style: TextStyle(fontSize: 10, color: _kGrey,
                             fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 2),
-                    Text(fila.problema,
-                        style: const TextStyle(fontSize: 12, color: _kDark)),
+                    const Spacer(),
+                    // Toggle imprimir problema en PDF
+                    GestureDetector(
+                      onTap: () => widget.onUpdate(
+                          () => fila.imprimirProblema = !fila.imprimirProblema),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(
+                          fila.imprimirProblema
+                              ? Icons.print
+                              : Icons.print_disabled,
+                          size: 14,
+                          color: fila.imprimirProblema ? _kNavy : Colors.grey,
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          fila.imprimirProblema ? 'Imprimir' : 'No imprimir',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: fila.imprimirProblema ? _kNavy : Colors.grey,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ]),
+                    ),
                   ]),
-                ),
-                const SizedBox(height: 8),
-              ],
+                  const SizedBox(height: 6),
+                  // Campo editable del problema
+                  TextFormField(
+                    initialValue: fila.problema,
+                    decoration: InputDecoration(
+                      hintText: 'Describe el problema...',
+                      hintStyle: TextStyle(fontSize: 12, color: Colors.grey.shade400),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(color: color.withOpacity(0.3))),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(color: color.withOpacity(0.3))),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 6),
+                      isDense: true,
+                    ),
+                    maxLines: 2,
+                    style: const TextStyle(fontSize: 12, color: _kDark),
+                    onChanged: (v) => widget.onUpdate(() => fila.problema = v),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: 8),
 
               // ── Acción recomendada SIEMPRE visible ──
               TextFormField(

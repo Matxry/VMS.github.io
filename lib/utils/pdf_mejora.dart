@@ -5,7 +5,8 @@ import '../models/models.dart';
 import 'pdf_helpers.dart';
 
 
-Future<void> generarPDFMejora(AppState state) async {
+
+Future<void> generarPDFMejora(AppState state, {bool incluirProblemas = true}) async {
   final pdf       = await crearDocumento();
   final logo      = await cargarLogo();
   final watermark = await cargarWatermark();
@@ -18,6 +19,7 @@ Future<void> generarPDFMejora(AppState state) async {
       'PLAN DE MEJORA',
       'VMS Sports | Consultoria Deportiva',
       pBlue, state.nombreClub, state.fecha, state.consultor, logo,
+      tipoOrg: state.tipoOrg,
     ),
   ));
 
@@ -54,22 +56,34 @@ Future<void> generarPDFMejora(AppState state) async {
         // Tabla
         pw.Table(
           border: pw.TableBorder.all(color: PdfColors.grey400, width: 0.5),
-          columnWidths: const {
-              0: pw.FlexColumnWidth(0.55),
-              1: pw.FlexColumnWidth(0.55),
-              2: pw.FlexColumnWidth(1.3),
-              3: pw.FlexColumnWidth(1.1),
-              4: pw.FlexColumnWidth(1.5),
-              5: pw.FlexColumnWidth(1.0),
-              6: pw.FlexColumnWidth(0.8),
-              7: pw.FlexColumnWidth(0.8),
+          columnWidths: incluirProblemas ? const {
+            0: pw.FlexColumnWidth(0.6),
+            1: pw.FlexColumnWidth(0.55),
+            2: pw.FlexColumnWidth(1.1),
+            3: pw.FlexColumnWidth(0.9),
+            4: pw.FlexColumnWidth(1.2),
+            5: pw.FlexColumnWidth(1.4),
+            6: pw.FlexColumnWidth(0.9),
+            7: pw.FlexColumnWidth(0.7),
+            8: pw.FlexColumnWidth(0.7),
+          } : const {
+            0: pw.FlexColumnWidth(0.6),
+            1: pw.FlexColumnWidth(0.55),
+            2: pw.FlexColumnWidth(1.3),
+            3: pw.FlexColumnWidth(1.0),
+            4: pw.FlexColumnWidth(1.6),
+            5: pw.FlexColumnWidth(1.0),
+            6: pw.FlexColumnWidth(0.8),
+            7: pw.FlexColumnWidth(0.8),
           },
           children: [
             pw.TableRow(
               decoration: pw.BoxDecoration(color: pBlue),
-              children: ['Impacto', 'Area', 'Accion',
-                'Responsable', 'Tiempo', 'Dificultad']
-                  .map((h) => pw.Padding(
+              children: [
+                'Impacto', 'Cal.', 'Punto', 'Área',
+                if (incluirProblemas) 'Problema',
+                'Acción', 'Responsable', 'Tiempo', 'Dificultad',
+              ].map((h) => pw.Padding(
                     padding: const pw.EdgeInsets.all(6),
                     child: pw.Text(h, style: headerStyle()),
                   )).toList(),
@@ -80,24 +94,58 @@ Future<void> generarPDFMejora(AppState state) async {
               else if (f.nivelImpacto <= 4) impColor = pMed;
               else impColor = pLow;
               return pw.TableRow(
+               
                 children: [
+                  // Impacto
                   pw.Padding(
                     padding: const pw.EdgeInsets.all(5),
                     child: pw.Container(
-                      padding: const pw.EdgeInsets.symmetric(
-                          horizontal: 4, vertical: 3),
+                      padding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 3),
                       decoration: pw.BoxDecoration(
                         color: impColor,
-                        borderRadius: const pw.BorderRadius.all(
-                            pw.Radius.circular(4)),
+                        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
                       ),
                       child: pw.Text(f.impactoLabel,
-                          style: pw.TextStyle(color: PdfColors.white,
-                              fontSize: 7, fontWeight: pw.FontWeight.bold),
+                          style: pw.TextStyle(color: PdfColors.white, fontSize: 7,
+                              fontWeight: pw.FontWeight.bold),
                           textAlign: pw.TextAlign.center),
                     ),
                   ),
+                  // Calificación
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(5),
+                    child: f.calificacion <= 0
+                        ? pw.Text('-', style: pw.TextStyle(fontSize: 8))
+                        : pw.Container(
+                            padding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                            decoration: pw.BoxDecoration(
+                              color: _calPdfColor(f.calificacion),
+                              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                            ),
+                            child: pw.Text('${f.calificacion}',
+                                style: pw.TextStyle(color: PdfColors.white, fontSize: 9,
+                                    fontWeight: pw.FontWeight.bold),
+                                textAlign: pw.TextAlign.center),
+                          ),
+                  ),
+                  // Punto
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(5),
+                    child: f.puntoRef.isEmpty
+                        ? pw.Text('-', style: pw.TextStyle(fontSize: 8))
+                        : pw.Container(
+                            padding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                            decoration: pw.BoxDecoration(
+                              color: pPrimary,
+                              borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+                            ),
+                            child: pw.Text(f.puntoRef,
+                                style: pw.TextStyle(color: PdfColors.white, fontSize: 7,
+                                    fontWeight: pw.FontWeight.bold)),
+                          ),
+                  ),
                   _cell(f.area, bold: true),
+                  if (incluirProblemas) _cell(f.problema),
                   _cell(f.accionRecomendada),
                   _cell(f.responsable),
                   _cell(f.tiempoEstimado),
@@ -117,6 +165,13 @@ Future<void> generarPDFMejora(AppState state) async {
     onLayout: (_) async => pdf.save(),
     name: 'Plan_Mejora_VMS_Sports.pdf',
   );
+}
+
+PdfColor _calPdfColor(int cal) {
+  if (cal <= 2) return pUrgent;
+  if (cal == 3) return pMed;
+  if (cal == 4) return pBlue;
+  return pLow;
 }
 
 pw.Widget _cell(String value, {bool bold = false}) => pw.Padding(
